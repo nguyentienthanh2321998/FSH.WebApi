@@ -1,0 +1,6 @@
+{
+  "DatabaseSettings": {
+    "DBProvider": "mssql",
+    "ConnectionString": "Data Source=localhost;Initial Catalog=Demo;Integrated Security=True;Persist Security Info=False;Pooling=False;Multiple Active Result Sets=False;Encrypt=False;Trust Server Certificate=False;Command Timeout=0"
+  }
+}
