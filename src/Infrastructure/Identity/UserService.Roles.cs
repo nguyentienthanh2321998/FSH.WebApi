@@ -19,7 +19,7 @@ internal partial class UserService
         {
             userRoles.Add(new UserRoleDto
             {
-                RoleId = role.Id,
+                RoleId = role.Id.ToString(),
                 RoleName = role.Name,
                 Description = role.Description,
                 Enabled = await _userManager.IsInRoleAsync(user, role.Name)
@@ -33,9 +33,9 @@ internal partial class UserService
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync(cancellationToken);
+        var user = await _userManager.Users.Where(u => u.Id.ToString() == userId).FirstOrDefaultAsync(cancellationToken);
 
-        _ = user ?? throw new NotFoundException(_localizer["User Not Found."]);
+        _ = user ?? throw new NotFoundException("User Not Found.");
 
         // Check if the user is an admin for which the admin role is getting disabled
         if (await _userManager.IsInRoleAsync(user, FSHRoles.Admin)
@@ -48,7 +48,7 @@ internal partial class UserService
             // Edge Case : there are chances for other tenants to have users with the same email as that of Root Tenant Admin. Probably can add a check while User Registration
            if (adminCount <= 2)
             {
-                throw new ConflictException(_localizer["Tenant should have at least 2 Admins."]);
+                throw new ConflictException("Tenant should have at least 2 Admins.");
             }
         }
 
@@ -71,6 +71,6 @@ internal partial class UserService
             }
         }
 
-        return _localizer["User Roles Updated Successfully."];
+        return "User Roles Updated Successfully.";
     }
 }

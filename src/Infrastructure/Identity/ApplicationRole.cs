@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FSH.WebApi.Infrastructure.Identity;
 
-public class ApplicationRole : IdentityRole
+public class ApplicationRole : IdentityRole<int>
 {
     public string? Description { get; set; }
 

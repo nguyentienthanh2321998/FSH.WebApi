@@ -11,16 +11,13 @@ namespace FSH.WebApi.Infrastructure.Middleware;
 internal class ExceptionMiddleware : IMiddleware
 {
     private readonly ICurrentUser _currentUser;
-    private readonly IStringLocalizer<ExceptionMiddleware> _localizer;
     private readonly ISerializerService _jsonSerializer;
 
     public ExceptionMiddleware(
         ICurrentUser currentUser,
-        IStringLocalizer<ExceptionMiddleware> localizer,
         ISerializerService jsonSerializer)
     {
         _currentUser = currentUser;
-        _localizer = localizer;
         _jsonSerializer = jsonSerializer;
     }
 
@@ -44,7 +41,6 @@ internal class ExceptionMiddleware : IMiddleware
                 Source = exception.TargetSite?.DeclaringType?.FullName,
                 Exception = exception.Message.Trim(),
                 ErrorId = errorId,
-                SupportMessage = _localizer["exceptionmiddleware.supportmessage"]
             };
             errorResult.Messages!.Add(exception.Message);
             var response = context.Response;

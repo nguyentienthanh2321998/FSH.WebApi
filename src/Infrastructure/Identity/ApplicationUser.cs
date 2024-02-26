@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FSH.WebApi.Infrastructure.Identity;
 
-public class ApplicationUser : IdentityUser
+public class ApplicationUser : IdentityUser<int>
 {
 
     public string BankID { get; set; }

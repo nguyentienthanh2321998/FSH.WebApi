@@ -20,18 +20,15 @@ namespace FSH.WebApi.Infrastructure.Identity;
 internal class TokenService : ITokenService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IStringLocalizer<TokenService> _localizer;
     private readonly SecuritySettings _securitySettings;
     private readonly JwtSettings _jwtSettings;
 
     public TokenService(
         UserManager<ApplicationUser> userManager,
         IOptions<JwtSettings> jwtSettings,
-        IStringLocalizer<TokenService> localizer,
         IOptions<SecuritySettings> securitySettings)
     {
         _userManager = userManager;
-        _localizer = localizer;
         _jwtSettings = jwtSettings.Value;
         _securitySettings = securitySettings.Value;
     }
@@ -42,18 +39,18 @@ internal class TokenService : ITokenService
         var user = await _userManager.FindByEmailAsync(request.Email.Trim().Normalize());
         if (user is null)
         {
-            throw new UnauthorizedException(_localizer["auth.failed"]);
+            throw new UnauthorizedException("auth.failed");
         }
 
         if (!user.IsActive)
         {
-            throw new UnauthorizedException(_localizer["identity.usernotactive"]);
+            throw new UnauthorizedException("identity.usernotactive");
         }
 
 
         if (!await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            throw new UnauthorizedException(_localizer["identity.invalidcredentials"]);
+            throw new UnauthorizedException("identity.invalidcredentials");
         }
 
         return await GenerateTokensAndUpdateUser(user, ipAddress);
@@ -66,12 +63,12 @@ internal class TokenService : ITokenService
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user is null)
         {
-            throw new UnauthorizedException(_localizer["auth.failed"]);
+            throw new UnauthorizedException("auth.failed");
         }
 
         if (user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
-            throw new UnauthorizedException(_localizer["identity.invalidrefreshtoken"]);
+            throw new UnauthorizedException("identity.invalidrefreshtoken");
         }
 
         return await GenerateTokensAndUpdateUser(user, ipAddress);
@@ -95,7 +92,7 @@ internal class TokenService : ITokenService
     private IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress) =>
         new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email),
             new(FSHClaims.BankID, user.BankID),
             new(FSHClaims.IpAddress, ipAddress),
@@ -144,7 +141,7 @@ internal class TokenService : ITokenService
                 SecurityAlgorithms.HmacSha256,
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            throw new UnauthorizedException(_localizer["identity.invalidtoken"]);
+            throw new UnauthorizedException("identity.invalidtoken");
         }
 
         return principal;

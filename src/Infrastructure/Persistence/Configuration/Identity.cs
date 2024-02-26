@@ -29,30 +29,30 @@ public class ApplicationRoleClaimConfig : IEntityTypeConfiguration<ApplicationRo
             .ToTable("RoleClaims", SchemaNames.Identity);
 }
 
-public class IdentityUserRoleConfig : IEntityTypeConfiguration<IdentityUserRole<string>>
+public class IdentityUserRoleConfig : IEntityTypeConfiguration<IdentityUserRole<int>>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder) =>
+    public void Configure(EntityTypeBuilder<IdentityUserRole<int>> builder) =>
         builder
             .ToTable("UserRoles", SchemaNames.Identity);
 }
 
-public class IdentityUserClaimConfig : IEntityTypeConfiguration<IdentityUserClaim<string>>
+public class IdentityUserClaimConfig : IEntityTypeConfiguration<IdentityUserClaim<int>>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserClaim<string>> builder) =>
+    public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) =>
         builder
             .ToTable("UserClaims", SchemaNames.Identity);
 }
 
-public class IdentityUserLoginConfig : IEntityTypeConfiguration<IdentityUserLogin<string>>
+public class IdentityUserLoginConfig : IEntityTypeConfiguration<IdentityUserLogin<int>>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserLogin<string>> builder) =>
+    public void Configure(EntityTypeBuilder<IdentityUserLogin<int>> builder) =>
         builder
             .ToTable("UserLogins", SchemaNames.Identity);
 }
 
-public class IdentityUserTokenConfig : IEntityTypeConfiguration<IdentityUserToken<string>>
+public class IdentityUserTokenConfig : IEntityTypeConfiguration<IdentityUserToken<int>>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserToken<string>> builder) =>
+    public void Configure(EntityTypeBuilder<IdentityUserToken<int>> builder) =>
         builder
             .ToTable("UserTokens", SchemaNames.Identity);
 }

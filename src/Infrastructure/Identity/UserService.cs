@@ -28,7 +28,6 @@ internal partial class UserService : IUserService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ApplicationDbContext _db;
-    private readonly IStringLocalizer<UserService> _localizer;
     private readonly IMailService _mailService;
     private readonly MailSettings _mailSettings;
     private readonly SecuritySettings _securitySettings;
@@ -42,7 +41,6 @@ internal partial class UserService : IUserService
         UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
         ApplicationDbContext db,
-        IStringLocalizer<UserService> localizer,
         IMailService mailService,
         IOptions<MailSettings> mailSettings,
         IEmailTemplateService templateService,
@@ -55,7 +53,6 @@ internal partial class UserService : IUserService
         _userManager = userManager;
         _roleManager = roleManager;
         _db = db;
-        _localizer = localizer;
         _mailService = mailService;
         _mailSettings = mailSettings.Value;
         _templateService = templateService;
@@ -72,12 +69,12 @@ internal partial class UserService : IUserService
 
     public async Task<bool> ExistsWithEmailAsync(string email, string? exceptId = null)
     {
-        return await _userManager.FindByEmailAsync(email.Normalize()) is ApplicationUser user && user.Id != exceptId;
+        return await _userManager.FindByEmailAsync(email.Normalize()) is ApplicationUser user && user.Id.ToString() != exceptId;
     }
 
     public async Task<bool> ExistsWithPhoneNumberAsync(string phoneNumber, string? exceptId = null)
     {
-        return await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is ApplicationUser user && user.Id != exceptId;
+        return await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is ApplicationUser user && user.Id.ToString() != exceptId;
     }
 
 
@@ -94,24 +91,24 @@ internal partial class UserService : IUserService
     {
         var user = await _userManager.Users
             .AsNoTracking()
-            .Where(u => u.Id == userId)
+            .Where(u => u.Id.ToString() == userId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        _ = user ?? throw new NotFoundException(_localizer["User Not Found."]);
+        _ = user ?? throw new NotFoundException("User Not Found.");
 
         return user.Adapt<UserDetailsDto>();
     }
 
     public async Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.Users.Where(u => u.Id == request.UserId).FirstOrDefaultAsync(cancellationToken);
+        var user = await _userManager.Users.Where(u => u.Id.ToString() == request.UserId).FirstOrDefaultAsync(cancellationToken);
 
-        _ = user ?? throw new NotFoundException(_localizer["User Not Found."]);
+        _ = user ?? throw new NotFoundException("User Not Found.");
 
         bool isAdmin = await _userManager.IsInRoleAsync(user, FSHRoles.Admin);
         if (isAdmin)
         {
-            throw new ConflictException(_localizer["Administrators Profile's Status cannot be toggled"]);
+            throw new ConflictException("Administrators Profile's Status cannot be toggled");
         }
 
         user.IsActive = request.ActivateUser;

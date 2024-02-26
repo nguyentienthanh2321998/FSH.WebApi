@@ -34,12 +34,12 @@ internal partial class UserService
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
         {
-            throw new InternalServerException(_localizer["Validation Errors Occurred."], result.GetErrors(_localizer));
+            throw new InternalServerException("Validation Errors Occurred.");
         }
 
         await _userManager.AddToRoleAsync(user, FSHRoles.Admin);
 
-        var messages = new List<string> { string.Format(_localizer["User {0} Registered."], user.UserName) };
+        var messages = new List<string> { string.Format("User {0} Registered.", user.UserName) };
 
         return string.Join(Environment.NewLine, messages);
     }
@@ -48,7 +48,7 @@ internal partial class UserService
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        _ = user ?? throw new NotFoundException(_localizer["User Not Found."]);
+        _ = user ?? throw new NotFoundException("User Not Found.");
 
         user.PhoneNumber = request.PhoneNumber;
         string phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -63,7 +63,7 @@ internal partial class UserService
 
         if (!result.Succeeded)
         {
-            throw new InternalServerException(_localizer["Update profile failed"], result.GetErrors(_localizer));
+            throw new InternalServerException("Update profile failed");
         }
     }
 }
